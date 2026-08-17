@@ -1,39 +1,52 @@
 const express = require('express');
 const app = express();
 
+// BigInt দিয়ে GCD বের করার ফাংশন
 function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
+    while (b !== 0n) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
 }
 
+// BigInt দিয়ে LCM বের করার ফাংশন
 function lcm(a, b) {
     return (a * b) / gcd(a, b);
 }
 
-// Strict Check: শুধু মাত্র পজিটিভ ইন্টিজার ডিজিট আছে কি না চেক করার জন্য
+// Strict Natural Number (1, 2, 3...) Validation Check
 function isNaturalNumber(val) {
-    if (!val || typeof val !== 'string') return false;
-    // শুধু ১ বা তার বেশি অঙ্ক/ডিজিট থাকলে (যেমন "123", কিন্তু "0", "-5", "4.5" বা "abc" নয়)
+    if (typeof val !== 'string') return false;
+    // কেবল পজিটিভ পূর্ণসংখ্যা (স্পেস বা ডেসিমেল ছাড়া) এলাউ করবে
     return /^[1-9]\d*$/.test(val.trim());
 }
 
 app.get('/anikaislam9530_gmail_com', (req, res) => {
-    // Response Header Plain Text নিশ্চিত করা
+    // Response strictly Plain Text হওয়া নিশ্চিত করা
     res.setHeader('Content-Type', 'text/plain');
 
     const { x, y } = req.query;
 
+    // Validation check
     if (!isNaturalNumber(x) || !isNaturalNumber(y)) {
         return res.status(200).send('NaN');
     }
 
-    const numX = parseInt(x, 10);
-    const numY = parseInt(y, 10);
-    const result = lcm(numX, numY);
+    try {
+        const numX = BigInt(x.trim());
+        const numY = BigInt(y.trim());
 
-    return res.status(200).send(result.toString());
+        const result = lcm(numX, numY);
+
+        return res.status(200).send(result.toString());
+    } catch (err) {
+        return res.status(200).send('NaN');
+    }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
