@@ -18,10 +18,10 @@ function isNaturalNumber(val) {
 }
 
 
-app.get('/ridwan_bin_masum2003_gmail_com', (req, res) => {
+app.get('/anika_islam9530_gmail_com', (req, res) => {
     const { x, y } = req.query;
     
-    
+    // যদি x বা y স্বাভাবিক সংখ্যা না হয় তবে NaN রিটার্ন করবে
     if (!isNaturalNumber(x) || !isNaturalNumber(y)) {
         return res.send('NaN');
     }
